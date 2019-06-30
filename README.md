@@ -26,6 +26,40 @@ if(!result) {
 // 接口返回“找不到 user_name=xxx 的资源"
  ```
 
+## 代码示例
+
+```js
+// 请求 `Get http://localhost:8084/post/1 HTTP1.1`
+@DController('/post')
+export class PostController {
+  @Get(':post_id')
+  // 前置权限控制
+  @Middleware([checkPostPermissionMiddleware('read')])
+  async getOne(
+    // 使用 `@CurrentUser` 获取当前登录状态
+    @CurrentUser() user: UserModel,
+    @Req() req: Request
+  ) {
+    const post_id = req.params.post_id
+    // 返回错误统一 `throw` 定义好的各种错误类
+    if(!post_id) {
+      throw new MissingParamError('post_id')
+    }
+    else {
+      const result = await PostModel.findByPk(post_id)
+
+      // 通用错误类 `EFCoreError`
+      if(!result) {
+        throw new EFCoreError('文章不存在')
+      }
+
+      // ...
+
+      return result
+    }
+  }
+}
+```
 
 ## 开发约定
 
