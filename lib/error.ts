@@ -1,28 +1,28 @@
 
 
-export class EFError extends Error {
+export class EFCoreError extends Error {
   status: number;
-  name = 'EFError';
+  name = 'EFCoreError';
   constructor(message) {
     super(message);
   }
 }
 
-export class ResourceNotFoundError extends EFError {
+export class ResourceNotFoundError extends EFCoreError {
   name = 'ResourceNotFoundError';
   constructor(resource?: string) {
     super(`Resource ${resource} was not found.`);
   }
 }
 
-export class ObjectAlreadyExistError extends EFError {
+export class ObjectAlreadyExistError extends EFCoreError {
   name = 'ObjectAlreadyExistError';
   constructor(resource) {
     super(`Object ${resource} already exist.`);
   }
 }
 
-export class AuthTimeoutError extends EFError {
+export class AuthTimeoutError extends EFCoreError {
   status = 401;
   name = 'AuthTimeoutError';
   constructor() {
@@ -31,7 +31,7 @@ export class AuthTimeoutError extends EFError {
 }
 
 
-export class NotDefinedErrorError extends EFError {
+export class NotDefinedErrorError extends EFCoreError {
   name = 'NotDefinedErrorError';
   constructor() {
     super('未定义的错误')
@@ -39,14 +39,14 @@ export class NotDefinedErrorError extends EFError {
 }
 
 // TODO: use ResourceNotFoundError
-export class UserNotExistError extends EFError {
+export class UserNotExistError extends EFCoreError {
   name = 'UserNotExistError';
   constructor() {
     super('用户不存在')
   }
 }
 
-export class FieldIncorrentError extends EFError {
+export class FieldIncorrentError extends EFCoreError {
   status = 400
   name = 'FieldIncorrentError';
   constructor(field) {
@@ -54,21 +54,21 @@ export class FieldIncorrentError extends EFError {
   }
 }
 
-export class MissingParamError extends EFError {
+export class MissingParamError extends EFCoreError {
   name = 'MissingParamError';
   constructor(param?) {
     super(`缺少参数${param}`)
   }
 }
 
-export class NoPermissionError extends EFError {
+export class NoPermissionError extends EFCoreError {
   name = 'NoPermissionError';
   constructor(operation?) {
     super(`没有权限${operation}`)
   }
 }
 
-export class FieldUsedError extends EFError {
+export class FieldUsedError extends EFCoreError {
   name = 'FieldUsedError';
   constructor(field?) {
     super(`${field}已被使用`)

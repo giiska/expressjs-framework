@@ -10,7 +10,9 @@ import cookieParser from 'cookie-parser'
 import {JwtService} from './JwtServiceExpress'
 import {logger} from '../lib/logger'
 import { controllerList, controllerActionList, authList, middlewareList, paramsList } from '../lib/decorator'
-import { EFError } from '../lib/error';
+import { EFCoreError } from '../lib/error';
+
+type EFCoreArgs = {env: any, jwtServiceInstance: any, public_dir?: string}
 
 export class EFCore {
   private readonly app: Application;
@@ -21,9 +23,11 @@ export class EFCore {
     env,
     jwtServiceInstance,
     public_dir
-  }) {
+  }: EFCoreArgs) {
     const {bodyLimit, corsHeaders} = env
-    this._jwtService = jwtServiceInstance
+    if(jwtServiceInstance) {
+      this._jwtService = jwtServiceInstance
+    }
 
     this.developmentMode = process.env.NODE_ENV !== "production";
     let app = this.app = express()
@@ -40,7 +44,9 @@ export class EFCore {
       limit : bodyLimit
     }))
     app.use(cookieParser())
-    app.use('/static', express.static(public_dir))
+    if(public_dir) {
+      app.use('/static', express.static(public_dir))
+    }
 
     this.initController()
 
@@ -154,7 +160,7 @@ export class EFCore {
   private addErrorHandler() {
     // catch 404 and forward to error handler
     const handle404: RequestHandler = function (req, res, next) {
-      let err = new EFError('Not Found')
+      let err = new EFCoreError('Not Found')
       err.status = 404
       next(err)
     }
